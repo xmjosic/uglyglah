@@ -22,28 +22,28 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity createPost(@RequestBody PostRequest postRequest) {
+    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest) {
         postService.save(postRequest);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public PostResponse getPost(@PathVariable Long id) {
-        return postService.getPost(id);
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(id));
     }
 
     @GetMapping("/")
-    public List<PostResponse> getAllPosts() {
-        return postService.getAllPosts();
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPosts());
     }
 
     @GetMapping("/by-subuglyglah/{id}")
-    public List<PostResponse> getPostsBySubuglyglah(@PathVariable Long id) {
-        return postService.getPostsBySubuglyglah(id);
+    public ResponseEntity<List<PostResponse>> getPostsBySubuglyglah(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsBySubuglyglah(id));
     }
 
     @GetMapping("/by-user/{name}")
-    public List<PostResponse> getPostsByUsername(@PathVariable String username) {
-        return postService.getPostsByUsername(username);
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByUsername(username));
     }
 }
