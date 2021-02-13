@@ -1,6 +1,8 @@
 package hr.xmjosic.uglyglah.service;
 
 import hr.xmjosic.uglyglah.dto.SubuglyglahDto;
+import hr.xmjosic.uglyglah.exceptions.UglyglahException;
+import hr.xmjosic.uglyglah.mapper.SubuglyglahMapper;
 import hr.xmjosic.uglyglah.model.Subuglyglah;
 import hr.xmjosic.uglyglah.repository.SubuglyglahRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,37 +19,31 @@ import static java.util.stream.Collectors.toList;
 public class SubuglyglahService {
 
     private final SubuglyglahRepository subuglyglahRepository;
+    private final SubuglyglahMapper subuglyglahMapper;
 
     @Autowired
-    public SubuglyglahService(SubuglyglahRepository subuglyglahRepository) {
+    public SubuglyglahService(SubuglyglahRepository subuglyglahRepository, SubuglyglahMapper subuglyglahMapper) {
         this.subuglyglahRepository = subuglyglahRepository;
+        this.subuglyglahMapper = subuglyglahMapper;
     }
 
     @Transactional
     public SubuglyglahDto save(SubuglyglahDto subuglyglahDto) {
-        Subuglyglah save = subuglyglahRepository.save(mapSubuglyglahDto(subuglyglahDto));
+        Subuglyglah save = subuglyglahRepository.save(subuglyglahMapper.mapDtoToSubuglyglah(subuglyglahDto));
         subuglyglahDto.setId(save.getId());
         return subuglyglahDto;
     }
 
     @Transactional(readOnly = true)
     public List<SubuglyglahDto> getAll() {
-        return subuglyglahRepository.findAll().stream().map(this::mapToDto).collect(toList());
+        return subuglyglahRepository.findAll().stream().map(subuglyglahMapper::mapSubuglyglahToDto).collect(toList());
     }
 
-    private SubuglyglahDto mapToDto(Subuglyglah subuglyglah) {
-        return SubuglyglahDto.builder()
-                .name(subuglyglah.getName())
-                .id(subuglyglah.getId())
-                .numOfPosts(subuglyglah.getPosts().size()).build();
-    }
 
-    private Subuglyglah mapSubuglyglahDto(SubuglyglahDto subuglyglahDto) {
-        return Subuglyglah
-                .builder()
-                .name(subuglyglahDto.getName())
-                .description(subuglyglahDto.getDescription())
-                .build();
-    }
+    public SubuglyglahDto getSubuglyglah(Long id) {
+        Subuglyglah subuglyglah = subuglyglahRepository.findById(id)
+                .orElseThrow(() -> new UglyglahException("No subuglyglah found whit id " + id));
 
+        return subuglyglahMapper.mapSubuglyglahToDto(subuglyglah);
+    }
 }

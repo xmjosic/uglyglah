@@ -31,4 +31,9 @@ public class SubuglyglahController {
     public ResponseEntity<List<SubuglyglahDto>> getAllSubuglyglah() {
         return ResponseEntity.status(HttpStatus.OK).body(subuglyglahService.getAll());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubuglyglahDto> getSubuglyglah(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(subuglyglahService.getSubuglyglah(id));
+    }
 }

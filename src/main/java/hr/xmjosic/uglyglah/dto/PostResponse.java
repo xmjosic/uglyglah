@@ -1,18 +1,18 @@
 package hr.xmjosic.uglyglah.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubuglyglahDto {
+public class PostResponse {
 
     private Long id;
-    private String name;
+    private String postName;
+    private String url;
     private String description;
-    private Integer numOfPosts;
-
+    private String userName;
+    private String subuglyglahName;
 }
