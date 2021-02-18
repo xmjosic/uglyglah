@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -81,6 +82,7 @@ public class AuthService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
+        verificationToken.setExpiryDate(Instant.now().plus(3, ChronoUnit.DAYS));
 
         verificationTokenRepository.save(verificationToken);
 
@@ -91,7 +93,11 @@ public class AuthService {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
         verificationToken.orElseThrow(() -> new UglyglahException("Invalid token"));
 
-        fetchUserAndEnable(verificationToken.get());
+        if (verificationToken.get().getExpiryDate().isAfter(Instant.now())) {
+            fetchUserAndEnable(verificationToken.get());
+        } else {
+            throw new UglyglahException("Verification token has expired!");
+        }
     }
 
     @Transactional

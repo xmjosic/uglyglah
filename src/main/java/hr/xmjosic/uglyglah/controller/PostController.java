@@ -42,8 +42,8 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsBySubuglyglah(id));
     }
 
-    @GetMapping("/by-user/{name}")
-    public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
+    @GetMapping("/by-user/{name:.*}")
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable("name") String username) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByUsername(username));
     }
 }

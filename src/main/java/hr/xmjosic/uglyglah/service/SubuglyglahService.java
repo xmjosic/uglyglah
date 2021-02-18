@@ -4,12 +4,14 @@ import hr.xmjosic.uglyglah.dto.SubuglyglahDto;
 import hr.xmjosic.uglyglah.exceptions.UglyglahException;
 import hr.xmjosic.uglyglah.mapper.SubuglyglahMapper;
 import hr.xmjosic.uglyglah.model.Subuglyglah;
+import hr.xmjosic.uglyglah.model.User;
 import hr.xmjosic.uglyglah.repository.SubuglyglahRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -20,16 +22,24 @@ public class SubuglyglahService {
 
     private final SubuglyglahRepository subuglyglahRepository;
     private final SubuglyglahMapper subuglyglahMapper;
+    private final AuthService authService;
 
     @Autowired
-    public SubuglyglahService(SubuglyglahRepository subuglyglahRepository, SubuglyglahMapper subuglyglahMapper) {
+    public SubuglyglahService(SubuglyglahRepository subuglyglahRepository, SubuglyglahMapper subuglyglahMapper, AuthService authService) {
         this.subuglyglahRepository = subuglyglahRepository;
         this.subuglyglahMapper = subuglyglahMapper;
+        this.authService = authService;
     }
 
     @Transactional
     public SubuglyglahDto save(SubuglyglahDto subuglyglahDto) {
-        Subuglyglah save = subuglyglahRepository.save(subuglyglahMapper.mapDtoToSubuglyglah(subuglyglahDto));
+        User currentUser = authService.getCurrentUser();
+
+        Subuglyglah subuglyglah = subuglyglahMapper.mapDtoToSubuglyglah(subuglyglahDto);
+        subuglyglah.setUser(currentUser);
+        subuglyglah.setCreatedDate(Instant.now());
+        Subuglyglah save = subuglyglahRepository.save(subuglyglah);
+
         subuglyglahDto.setId(save.getId());
         return subuglyglahDto;
     }
