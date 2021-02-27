@@ -3,6 +3,7 @@ package hr.xmjosic.uglyglah.config;
 import hr.xmjosic.uglyglah.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,6 +42,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/subuglyglah")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/**")
                 .permitAll()
                 .antMatchers("/v2/api-docs",
                         "/configuration/ui",
